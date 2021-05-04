@@ -23,7 +23,7 @@
 								<li>문의 : 추자면사무소 064)728-4265</li>
 							</ul>
 						</div>
-						<a href="tourView.jsp?${ }" onclick="fnView(806);return false;" class="go">상세보기</a>
+						<a href="tourView.jsp?" onclick="fnView(806);return false;" class="go">상세보기</a>
 					</li>
 									
 					<li>
@@ -71,7 +71,7 @@
 								<li>문의 : 상화원 041)933-4750</li>
 							</ul>
 						</div>
-						<a href=`tourView.jsp?${ }` onclick="fnView(802);return false;" class="go">상세보기</a>
+						<a href=`tourView.jsp?$` onclick="fnView(802);return false;" class="go">상세보기</a>
 					</li>
 									
 					<li>

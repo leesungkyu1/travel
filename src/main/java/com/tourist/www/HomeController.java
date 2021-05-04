@@ -6,9 +6,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	private String appkey;
+	public static final String	APPKEY = "5EyE8Ck8EJm69XXgn6cY0Nzp9%2B8SZsOxwXbfbOa1qODptNm5daE%2F9vIef81TSkoAW%2F1AN6bbfWc7roNRO%2BW5Qw%3D%3D";
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -46,10 +51,13 @@ public class HomeController {
 	public String tourView(String word, Model model, Locale locale) {
 		logger.info("Welcome view!", locale);
 		BufferedReader br = null;
+		
+		ArrayList tourList = new ArrayList();
 
 		
-		String urlstr = "http://apis.data.go.kr/6300000/tourDataService/tourDataList?"
-				+ "5EyE8Ck8EJm69XXgn6cY0Nzp9+8SZsOxwXbfbOa1qODptNm5daE/9vIef81TSkoAW/1AN6bbfWc7roNRO+W5Qw==&"
+		
+		String urlstr = "http://apis.data.go.kr/6300000/tourDataService/tourDataListJson?servicekey="
+				+ APPKEY
 				+ "numOfRows=10&"
 				+ "pageNo=1&"
 				+ "searchKeyword="
@@ -62,11 +70,24 @@ public class HomeController {
 			HttpURLConnection urlconnection = (HttpURLConnection) url.openConnection();
 			urlconnection.setRequestMethod("GET");
 			br = new BufferedReader(new InputStreamReader(urlconnection.getInputStream(), "UTF-8"));
+			
+			JSONParser jsonParse = new JSONParser();
+			
+			//객체화
+			JSONObject jsonObject = (JSONObject)jsonParse.parse(url);
+			
+			//관광지 배열 생성
+			JSONArray touristArray = (JSONArray) jsonObject.get("tourList");
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "redirect:"+urlstr;
+		
+		model.addAttribute("word", urlstr);
+		return "redirect:list";
+		
+		
 				
 		
 		
