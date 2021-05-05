@@ -14,6 +14,7 @@ import java.util.Locale;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -51,19 +52,19 @@ public class HomeController {
 	public String tourView(String word, Model model, Locale locale) {
 		logger.info("Welcome view!", locale);
 		BufferedReader br = null;
+		String result ="";
+		String line = "";
 		
-		ArrayList tourList = new ArrayList();
-
 		
 		
 		String urlstr = "http://apis.data.go.kr/6300000/tourDataService/tourDataListJson?servicekey="
 				+ APPKEY
-				+ "numOfRows=10&"
-				+ "pageNo=1&"
-				+ "searchKeyword="
+				+ "&numOfRows=10"
+				+ "&pageNo=1"
+				+ "&searchCondition="
 				+ word;
 		
-		System.out.println(urlstr);
+		System.out.println("url 값"+urlstr);
 		
 		try {
 			URL url = new URL(urlstr);
@@ -71,21 +72,41 @@ public class HomeController {
 			urlconnection.setRequestMethod("GET");
 			br = new BufferedReader(new InputStreamReader(urlconnection.getInputStream(), "UTF-8"));
 			
+			
+			
+			//개행시 문자들 구별
+			while((line=br.readLine())!=null) {
+				result=result.concat(line);
+				System.out.println("line의 값은:"+line);
+			}
+			
+			//파서 생성
 			JSONParser jsonParse = new JSONParser();
 			
-			//객체화
-			JSONObject jsonObject = (JSONObject)jsonParse.parse(url);
+			//
+			JSONObject jsonObject = (JSONObject)jsonParse.parse(result);
+			System.out.println("jsonobj : "+jsonObject);
 			
-			//관광지 배열 생성
-			JSONArray touristArray = (JSONArray) jsonObject.get("tourList");
+			//JSON 중괄호로 시작되는 키 구별
+			JSONObject comHeader = (JSONObject)jsonObject.get("comMsgHeader");
+			JSONObject msgHeader = (JSONObject)jsonObject.get("msgHeader");
 			
-		} catch (IOException e) {
+			
+			JSONArray body = (JSONArray)jsonObject.get("msgBody");
+//			JSONObject msgBody = (JSONObject)jsonObject.get("msgBody");
+			
+			
+			System.out.println("============변환============");
+			System.out.println("comHeader :"+comHeader);
+			System.out.println("msgHeader :"+msgHeader);
+			System.out.println("msgBody : "+ body);
+			
+		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		model.addAttribute("word", urlstr);
-		return "redirect:list";
+		return "/tourView";
 		
 		
 				
