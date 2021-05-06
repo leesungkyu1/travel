@@ -49,8 +49,8 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/tourView", method= RequestMethod.POST)
-	public String tourView(String word, Model model, Locale locale) {
-		logger.info("Welcome view!", locale);
+	public String tourView(String word, Model model) {
+		logger.info("Welcome view!");
 		BufferedReader br = null;
 		String result ="";
 		String line = "";
@@ -94,6 +94,8 @@ public class HomeController {
 			
 			JSONArray body = (JSONArray)jsonObject.get("msgBody");
 //			JSONObject msgBody = (JSONObject)jsonObject.get("msgBody");
+			
+			
 			
 			
 			System.out.println("============변환============");
