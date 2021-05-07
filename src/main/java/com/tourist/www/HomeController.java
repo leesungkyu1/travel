@@ -49,7 +49,7 @@ public class HomeController {
 		return "main";
 	}
 	
-	@ResponseBody
+
 	@RequestMapping(value = "/tourView", method= RequestMethod.POST)
 	public String tourView(String word, Model model) {
 		logger.info("Welcome view!");
@@ -66,7 +66,7 @@ public class HomeController {
 				+ "&searchCondition="
 				+ word;
 		
-//		System.out.println("url 값"+urlstr);
+		System.out.println("url 값"+urlstr);
 		
 		try {
 			URL url = new URL(urlstr);
@@ -90,16 +90,15 @@ public class HomeController {
 //			System.out.println("jsonobj : "+jsonObject);
 			
 			//JSON 중괄호로 시작되는 키 구별
-			JSONObject comHeader = (JSONObject)jsonObject.get("comMsgHeader");
-			JSONObject msgHeader = (JSONObject)jsonObject.get("msgHeader");
+//			JSONObject comHeader = (JSONObject)jsonObject.get("comMsgHeader");
+//			JSONObject msgHeader = (JSONObject)jsonObject.get("msgHeader");
 			
 			//대괄호로 만들어진 바디 배열화
 			JSONArray body = (JSONArray)jsonObject.get("msgBody");
 //			JSONObject msgBody = (JSONObject)jsonObject.get("msgBody");
 			
 			
-			
-			
+	
 //			System.out.println("============변환============");
 //			System.out.println("comHeader :"+comHeader);
 //			System.out.println("msgHeader :"+msgHeader);
@@ -111,21 +110,22 @@ public class HomeController {
 			
 			for(int i=0; i<body.size(); i++) {
 				JSONObject obj = (JSONObject)body.get(i);
-
+				
+			
 				System.out.println("body의 개수" + obj);
+				
 				
 			}
 			
-
-			model.addAttribute("result", body);
+			model.addAttribute("place" , body);
 			
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return "/";
 		
+		return "tourView";
 		
 				
 		
