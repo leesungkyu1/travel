@@ -2,15 +2,12 @@
     pageEncoding="UTF-8"%>
     
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
-
+<jsp:include page="header.jsp"/>
 <!DOCTYPE html>
 
 
 
-<form action="tourView" method="post">
-	이름 : <input type="text" name="word">
-	<input type="submit" value="검색">
-</form>
+
 				
 <!-- 			<p class="data_count">총 6건 [1/2 쪽]</p>
 	

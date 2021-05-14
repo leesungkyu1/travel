@@ -5,11 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.sound.sampled.AudioFormat.Encoding;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,7 +27,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Handles requests for the application home page.
@@ -30,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-	public static final String	APPKEY = "5EyE8Ck8EJm69XXgn6cY0Nzp9%2B8SZsOxwXbfbOa1qODptNm5daE%2F9vIef81TSkoAW%2F1AN6bbfWc7roNRO%2BW5Qw%3D%3D";
+	public static final String	APIKEY = "5EyE8Ck8EJm69XXgn6cY0Nzp9%2B8SZsOxwXbfbOa1qODptNm5daE%2F9vIef81TSkoAW%2F1AN6bbfWc7roNRO%2BW5Qw%3D%3D";
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -49,9 +54,13 @@ public class HomeController {
 		return "main";
 	}
 	
-
+	
+	
 	@RequestMapping(value = "/tourView", method= RequestMethod.POST)
-	public String tourView(String word, Model model) {
+	public String tourView(String word, Model model, HttpServletRequest request, String area1) {
+		
+		
+		
 		logger.info("Welcome view!");
 		BufferedReader br = null;
 		String result ="";
@@ -59,22 +68,43 @@ public class HomeController {
 		
 		
 		
-		String urlstr = "http://apis.data.go.kr/6300000/tourDataService/tourDataListJson?servicekey="
-				+ APPKEY
-				+ "&numOfRows=10"
-				+ "&pageNo=1"
-				+ "&searchCondition="
-				+ word;
-		
-		System.out.println("url 값"+urlstr);
 		
 		try {
+			System.out.println("word value = "+word);
+			String keyword = URLEncoder.encode(word, "UTF-8");
+			System.out.println("encoded word value = "+keyword);
+			String urlstr = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey="
+					+ APIKEY
+					+ "&numOfRows=10"
+					+ "&pageNo=1"
+					+ "&MobileOS=ETC"
+					+ "&MobileApp=AppTest"
+					+ "&_type=json"
+					+ "&listYN=Y" //목록 구분(Y=목록, N=개수)
+					+ "&areaCode=39"
+					+ "&keyword="
+					+ keyword;
+//				+ "&contentTypeId="
+//				+ contenttypeid;
+			
+			
+			
+			System.out.println("url 값"+urlstr);
 			URL url = new URL(urlstr);
 			HttpURLConnection urlconnection = (HttpURLConnection) url.openConnection();
 			urlconnection.setRequestMethod("GET");
-			br = new BufferedReader(new InputStreamReader(urlconnection.getInputStream(), "UTF-8"));
+			urlconnection.setRequestProperty("content-type", "apllication/json");
+			System.out.println("Response code:"+urlconnection.getResponseCode());
 			
+			if(urlconnection.getResponseCode() >= 200 && urlconnection.getResponseCode() <= 300) {
+				br = new BufferedReader(new InputStreamReader(urlconnection.getInputStream()));
+				
+			} else {
+				br = new BufferedReader(new InputStreamReader(urlconnection.getErrorStream()));
+				
+			}
 			
+	
 			
 			//개행시 문자들 구별
 			while((line=br.readLine())!=null) {
@@ -85,16 +115,45 @@ public class HomeController {
 			//파서 생성
 			JSONParser jsonParse = new JSONParser();
 			
-			//
+			
 			JSONObject jsonObject = (JSONObject)jsonParse.parse(result);
-//			System.out.println("jsonobj : "+jsonObject);
+			System.out.println("jsonobj : "+jsonObject);
+			
+			JSONObject jsonresponse = (JSONObject)jsonObject.get("response");
+//			System.out.println("=========================="+jsonresponse);
+			
+			JSONObject jsonheader = (JSONObject)jsonresponse.get("header");
+//			System.out.println("+++++++++++++++++++++"+jsonheader);
+			
+			JSONObject jsonbody = (JSONObject)jsonresponse.get("body");
+//			System.out.println(jsonbody+"=======================");
+			
+			JSONObject jsonitems = (JSONObject)jsonbody.get("items");
+//			System.out.println(jsonitems+"ddddddddddddddddddddddddddddddd");
+			
+			JSONArray jsonitem = (JSONArray)jsonitems.get("item");
+			System.out.println("===================item"+jsonitem);
+			
+			
+			
+			
+			
+			
+//			for(int i=0; i<jsonitem.size(); i++) {
+//				if(jsonitem.get(i).equals(0)) {
+//					System.out.println("오류발생");
+//				}
+//				
+//				
+//			}
 			
 			//JSON 중괄호로 시작되는 키 구별
 //			JSONObject comHeader = (JSONObject)jsonObject.get("comMsgHeader");
 //			JSONObject msgHeader = (JSONObject)jsonObject.get("msgHeader");
 			
 			//대괄호로 만들어진 바디 배열화
-			JSONArray body = (JSONArray)jsonObject.get("msgBody");
+			
+			
 //			JSONObject msgBody = (JSONObject)jsonObject.get("msgBody");
 			
 			
@@ -106,19 +165,23 @@ public class HomeController {
 			
 			
 			
+			
+			
 
+//			 for(int i=0; i<body.size(); i++) { JSONObject obj = (JSONObject)body.get(i);
+//			  
+//			  
+//			  System.out.println("body의 개수" + obj);
+//			  
+//			  
+//			  }
+
+
+
+			 model.addAttribute("place", jsonitem);
+			 
 			
-			for(int i=0; i<body.size(); i++) {
-				JSONObject obj = (JSONObject)body.get(i);
-				
-			
-				System.out.println("body의 개수" + obj);
-				
-				
-			}
-			
-			model.addAttribute("place" , body);
-			
+
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,7 +189,6 @@ public class HomeController {
 		
 		
 		return "tourView";
-		
 				
 		
 		
@@ -134,5 +196,9 @@ public class HomeController {
 		
 	
 	}
-	
+
+
+
 }
+	
+
