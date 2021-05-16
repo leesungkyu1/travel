@@ -13,8 +13,8 @@
 <!DOCTYPE html>	
 
 <script>
- 	function goDetailPage(seq){
- 	     location.href="/detail?tourSeq="+seq;
+ 	function goDetailPage(contentId){
+ 	     location.href="/detail?contentId="+contentId;
  	}
  	
 //  	var area = document.getElementById("areacode");
@@ -169,7 +169,7 @@
 						    <c:forEach var="list" items="${dataList}">
 						    		<li class= "list_thumType" style="border-bottom: 1px solid #e6e6e6;">
 								      <div class="photo">
-									     <a onclick="goDetailPage('${list.contentid}')">
+									     <a onclick="goDetailPage('${list.contentId}')">
 									      	<img src="${list.firstimage2 }">
 								      	</a>
 								      </div>

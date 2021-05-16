@@ -22,23 +22,24 @@ public class DetailController {
 
 	
 	@RequestMapping(value="/detail", method=RequestMethod.GET)
-	public String DetailView(String seq1, Model model, HttpServletRequest request) {
+	public String DetailView(String contentId, Model model, HttpServletRequest request) {
 		
 		
-		seq1 = request.getParameter("tourSeq");
-		String apikey = "5rufcvkmc6sxjc7s";
+		seq1 = request.getParameter("contentId");
+		String apikey = "5EyE8Ck8EJm69XXgn6cY0Nzp9%2B8SZsOxwXbfbOa1qODptNm5daE%2F9vIef81TSkoAW%2F1AN6bbfWc7roNRO%2BW5Qw%3D%3D";
 		BufferedReader br = null;
 		String result = "";
 		String line = "";
 		
-		System.out.println(seq1);
+		System.out.println(contentId);
 		
-		String urlstr1 = "http://api.visitjeju.net/vsjApi/contents/searchList?apiKey="
+		String urlstr1 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?ServiceKey="
 		     	+apikey
-		     	+"&tourSeq="
-		     	+seq1;
+		     	+ "&MobileOS=ETC"
+				+ "&MobileApp=AppTest"
+		     	+ contentId;
 		
-		System.out.println(urlstr1);
+		System.out.println(contentId);
 		
 		
 		try {
