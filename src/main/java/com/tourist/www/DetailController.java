@@ -25,7 +25,7 @@ public class DetailController {
 	public String DetailView(String contentId, Model model, HttpServletRequest request) {
 		
 		
-		seq1 = request.getParameter("contentId");
+		contentId = request.getParameter("contentId");
 		String apikey = "5EyE8Ck8EJm69XXgn6cY0Nzp9%2B8SZsOxwXbfbOa1qODptNm5daE%2F9vIef81TSkoAW%2F1AN6bbfWc7roNRO%2BW5Qw%3D%3D";
 		BufferedReader br = null;
 		String result = "";
@@ -53,6 +53,8 @@ public class DetailController {
 			}
 			
 			System.out.println(result);
+			
+			
 			JSONParser json = new JSONParser();
 			
 			JSONObject jsonobj = (JSONObject)json.parse(result);
