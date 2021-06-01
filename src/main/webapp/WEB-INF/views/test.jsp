@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,29 +13,46 @@
 
 
 
+<script>
+ 	function pagingMove(pageno){
+ 		var form = document.createElement("form");
+ 		var input = document.createElement("input");
+ 		var input2 = document.createElement("input");
+ 		
+ 		input.setAttribute("type","text");
+ 		input.setAttribute("name","pageNo");
+ 		input.setAttribute("value",pageno);
+ 		
+ 		input2.setAttribute("type","text");
+ 		input2.setAttribute("name","word");
+ 		input2.setAttribute("value","${word}");
+ 		
+ 		form.method = "post";
+ 		form.action = "/tourView";
+ 		
+ 		form.appendChild(input);
+ 		form.appendChild(input2);
+ 		
+ 		document.body.appendChild(form);
+ 		
+ 		form.submit();
+ 	}
+ 		
+	     /* location.href="/tourView?pageNo="+pageno;	} */
+</script>
+ 	
 
 <body>
-
-
-
-
-				<form name="area1" action="/tourView" method="GET">				
-					<select name="areacode" id="areacode">
-						<option value="1">서울</option>
-						<option value="2">인천</option>
-						<option value="3">대전</option>
-						<option value="4">대구</option>
-						<option value="5">광주</option>
-						<option value="6">부산</option>
-						<option value="7">울산</option>
-						<option value="8">세종특별자치시</option>
-						<option value="9">경기도</option>
-						<option value="10">강원도/option>
-
-					</select>
-					<input type="submit" value="검색">
-				</form>	
-				
+    <c:set var="cnt" value="${page1 }"></c:set>
+    	<c:if test="${cnt.pageNo > 1}">
+			 <div>
+			 	<input type="button" value="이전으로" onclick="pagingMove(${cnt.pageNo -1})"/>
+	  		 </div>    	
+    	</c:if>
+    	
+		<div>
+			<input type="button" value="다음으로" onclick="pagingMove(${cnt.pageNo + 2})"/>
+		</div>    	
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.tourist.www;
+package com.tourist.www.tour;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,24 +22,33 @@ public class DetailController {
 
 	
 	@RequestMapping(value="/detail", method=RequestMethod.GET)
-	public String DetailView(String contentId, Model model, HttpServletRequest request) {
+	public String DetailView(String contentid, Model model, HttpServletRequest request) {
 		
 		
-		contentId = request.getParameter("contentId");
+		
+//		contentid = request.getParameter("contentid");
+//		System.out.println(contentid);
+		
 		String apikey = "5EyE8Ck8EJm69XXgn6cY0Nzp9%2B8SZsOxwXbfbOa1qODptNm5daE%2F9vIef81TSkoAW%2F1AN6bbfWc7roNRO%2BW5Qw%3D%3D";
 		BufferedReader br = null;
 		String result = "";
 		String line = "";
 		
-		System.out.println(contentId);
 		
 		String urlstr1 = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?ServiceKey="
-		     	+apikey
+		     	+ apikey
+		     	+ "&contentId="
+		     	+ contentid
 		     	+ "&MobileOS=ETC"
+		     	+ "&defaultYN=Y"
+		     	+ "&firstImageYN=Y"
+		     	+ "&overviewYN=Y"
 				+ "&MobileApp=AppTest"
-		     	+ contentId;
+				+ "&_type=json"
+				+ "&mapninfoYN=Y"
+				+ "&addrinfoYN=Y";
 		
-		System.out.println(contentId);
+		System.out.println(urlstr1);
 		
 		
 		try {
@@ -58,28 +67,36 @@ public class DetailController {
 			JSONParser json = new JSONParser();
 			
 			JSONObject jsonobj = (JSONObject)json.parse(result);
+			System.out.println("========================="+ jsonobj);
 			
-			JSONObject jsoncom = (JSONObject)jsonobj.get("comMsgHeader");
+			JSONObject jsonresponse = (JSONObject)jsonobj.get("response");
+			System.out.println("123123========================="+jsonresponse);
 			
-			JSONObject jsonbody = (JSONObject)jsonobj.get("msgBody");
+//			JSONObject jsonheader = (JSONObject)jsonresponse.get("header");
+			JSONObject jsonbody = (JSONObject)jsonresponse.get("body");
 			
-			System.out.println("com============================================"+jsoncom);
-			System.out.println("body==================="+jsonbody);
+			System.out.println("==========================="+jsonbody);
+			JSONObject jsonitems = (JSONObject)jsonbody.get("items");
+			JSONObject jsonitem = (JSONObject)jsonitems.get("item");
+			
+			
+			System.out.println("com============================================"+jsonitem);
+
 	
-			
-			JSONArray jsonimg = (JSONArray)jsonbody.get("imageList");
+//			
+//			JSONArray jsonimg = (JSONArray)jsonbody.get("imageList");
 //			System.out.println("img==============================="+jsonimg.get(1));
 			
-			JSONObject img2 = (JSONObject)jsonimg.get(0);
-			System.out.println("========================="+img2);
+//			JSONObject img2 = (JSONObject)jsonimg.get(0);
+//			System.out.println("========================="+img2);
 
 			
 //			System.out.println("================================================="+img2.get("tFilename"));
 			
 
 			
-			model.addAttribute("detaildata", jsonbody);
-			model.addAttribute("img", img2);
+			model.addAttribute("detaildata", jsonitem);
+//			model.addAttribute("img", img2);
 			
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block

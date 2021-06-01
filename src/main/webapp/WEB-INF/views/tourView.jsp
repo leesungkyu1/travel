@@ -2,25 +2,17 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-<%@ page import = "org.json.simple.JSONArray" %>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
 <%@include file = "header.jsp" %>
-<%
-	JSONArray jObj = (JSONArray)request.getAttribute("place");
-%>
 
-<%-- <%@include file = "header.jsp"%> --%>
 <!DOCTYPE html>	
 
 <script>
- 	function goDetailPage(contentId){
- 	     location.href="/detail?contentId="+contentId;
+ 	function goDetailPage(contid){
+ 	     location.href="/detail?contentid="+contid;
  	}
- 	
-//  	var area = document.getElementById("areacode");
-//  	var areacode = area.options[area.selectedvalue].value;
-
 </script>
+
 
 <style>
 
@@ -121,7 +113,7 @@
 
 .box_rightType3 {
 	float: right;
-	width: 300px;
+	width: 400px;
 	border: 1px solid #e6e6e6;
 	background-color: #f7f7f7;
 	position: absolute;
@@ -151,43 +143,36 @@
     color: #666;
     -webkit-text-size-adjust: none;
 
-
+}
 
 </style>
 
 
 
+
+
 <body>
-
-	
-
 	<div id="contents">
+		<button onclick="pay()">test</button>
+		<button onclick="cancelPay()">환불하기</button>
 			<div class="wrap_contView clfix search">
 				<ul class="list_thumType type1">
 					<div class = "listwrap">
-						<c:set var="dataList" value="<%=jObj %>" />
+						<c:set var="dataList" value="${place}" />
 						    <c:forEach var="list" items="${dataList}">
 						    		<li class= "list_thumType" style="border-bottom: 1px solid #e6e6e6;">
 								      <div class="photo">
-									     <a onclick="goDetailPage('${list.contentId}')">
+									     <a onclick="goDetailPage('${list.contentid}')">
 									      	<img src="${list.firstimage2 }">
 								      	</a>
 								      </div>
 								      
 								      <div class = "textbox">
-									      <div class="contentid">
-										      <a onclick="goDetailPage('${list.contentid}')">
-										      	${list.contentid}
-										      </a>
-									      </div>
+									      
 									      <div class="title" >
-										      <a onclick="goDetailPage('${list.contentid}')">
-										      	${list.title}
-										      </a>
-										      
+										      <h3><a onclick="goDetailPage('${list.contentid}')">${list.title }</a></h3>
 										  </div>
 									      <div class="addr2">${list.addr1}</div>
-									      <div class="readcount">${list.readcount }</div>    
 								      </div>
 							      </li>
 						</c:forEach>
@@ -200,17 +185,76 @@
 							<ul id="p_search">
 								<c:forEach var="cnt" items="${dataList }">
 									<li>
-										<div class="name"><a href="/detail?tourSeq=${cnt.tourSeq}">${cnt.name}</a></div>
+										<div class="name"><a>${cnt.title}</a>
+										</div>
 									</li>
 								</c:forEach>
 							</ul>
-					
+					</div>
 				</div>
-			</div>
 		</div>
 	</div>
 	
+	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 	
+	<script>
+		console.log('test');	
+		IMP.init('imp14890030'); // 아임포트 관리자 페이지의 "시스템 설정" > "내 정보" 에서 확인 가능
+		function pay () {	
+			IMP.request_pay({
+			    pg : 'html5_inicis',
+			    pay_method : 'card',
+			    merchant_uid : 'merchant_' + new Date().getTime(),
+			    name : '주문명:결제테스트',
+			    amount : 100,
+			    buyer_email : 'iamport@siot.do',
+			    buyer_name : '구매자이름',
+			    buyer_tel : '010-1234-5678'
+			}, function(rsp) {
+			    if ( rsp.success ) {
+			        var msg = '결제가 완료되었습니다.';
+			        msg += '고유ID : ' + rsp.imp_uid;
+			        msg += '상점 거래ID : ' + rsp.merchant_uid;
+			        msg += '결제 금액 : ' + rsp.paid_amount;
+			        msg += '카드 승인번호 : ' + rsp.apply_num;
+			    } else {
+			        var msg = '결제에 실패하였습니다.';
+			        msg += '에러내용 : ' + rsp.error_msg;
+			    }
+			    alert(msg);         
+			});
+		}
+	</script>
 	
+  	<script 
+  		src="https://code.jquery.com/jquery-3.3.1.min.js"
+	    	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	    	crossorigin="anonymous">
+  	</script>
+  	
+  	<!-- jQuery CDN --> 
+	<script>
+	    function cancelPay(){
+	      jQuery.ajax({
+	        "url": "/payments/cancel",
+	        "type": "POST",
+	        "contentType": "application/json",
+	        "data": JSON.stringify({
+	          "merchant_uid": "mid_" + new Date().getTime(), // 주문번호
+	          "cancel_request_amount": 100, // 환불금액
+	          "reason": "테스트 결제 환불", // 환불사유
+	        }),
+	        "dataType": "json"
+	      }).done(function(result){
+	    	  alert("환불 성공");
+	      }).done(function(error){
+	    	  alert("환불 실패");
+	      });
+	    }
+	    
+	</script>
+
+	
+
 	
 </body>

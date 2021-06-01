@@ -1,7 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+ <%-- <%@ page import = "org.json.simple.JSONArray" %> --%>
 <!DOCTYPE html>
-
+<%-- <%
+	JSONArray jObj = (JSONArray)request.getAttribute("place");
+%> --%>
 <style>
 
 .div {
@@ -86,28 +90,47 @@
 
 
 	<header id="common_header" class="main_gnb sub">
-	
 		<div id="gnbMain">	
 			<img src="../resources/imges/common/logo_spring.png">
 			<div class = "search">
 				<span>
 					<form accept-charset="UTF-8" action="tourView" method="POST">
 						<input type="text" placeholder="지금은 잠시 멈춰야 할 때! 랜선으로 즐겨봐요" title="검색" id="inp_search" name="word" 
-						style="
-						height:45px;
-						padding: 0 50px 0 20px;
-						line-height: 45px;
-						border: 0;
-						width: 100%;
-						font-size:16px;
-						box-sizing:border-box;
-						background: #eef0f2;
-						outline: none;
-						border-radius: 10px;"><input type="submit" value="검색">
-						
+							style="
+							height:45px;
+							padding: 0 50px 0 20px;
+							line-height: 45px;
+							border: 0;
+							width: 100%;
+							font-size:16px;
+							box-sizing:border-box;
+							background: #eef0f2;
+							outline: none;
+							border-radius: 10px;">
+							<select name="areacode">				
+									<option value="1">서울</option>										
+									<option value="2">인천</option>										
+									<option value="3">대전</option>										
+									<option value="4">대구</option>										
+									<option value="5">광주</option>										
+									<option value="6">부산</option>										
+									<option value="7">울산</option>										
+									<option value="8">세종</option>										
+									<option value="31">경기</option>										
+									<option value="32">강원도</option>										
+									<option value="33">충청북도</option>										
+									<option value="34">충청남도</option>										
+									<option value="35">경상북도</option>										
+									<option value="36">경상남도</option>										
+									<option value="37">전라북도</option>										
+									<option value="38">전라남도</option>										
+									<option value="39">제주</option>										
+							</select>
+						<input type="submit" value="검색">	
 					</form>
 				</span>
 			</div>
 		</div>
+		
 	</header>
 </body>

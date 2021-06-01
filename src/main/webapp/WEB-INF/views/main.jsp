@@ -1,90 +1,102 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
-<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
-<jsp:include page="header.jsp"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%@include file = "header.jsp" %>
+
+
+
 <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+
+
+
+<style>
+     
+body {font-size:11pt; padding:0; margin:0; text-align: center;}
+h3 {color: #85144b; font-size: 14pt; margin:10 auto; padding: 10px;}
+.contents {width: 800px; height: 400px; margin: 0 auto;}
+	
+	/* banner */
+.banner {position: relative; width: 70%; height: 80%; top: 50px;  margin:0 auto; padding:0; overflow: hidden;}
+.banner ul {position: absolute; margin: 0px; padding:0; list-style: none; }
+.banner ul li {float: left; width: 600px; height: 300px; margin:0; padding:0;}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+<script type="text/javascript">
+
+ //client rolling banner
+  	$(document).ready(function() {
+		//사용할 배너
+		var $banner = $(".banner").find("ul");
+
+		var $bannerWidth = $banner.children().outerWidth();//배너 이미지의 폭
+		var $bannerHeight = $banner.children().outerHeight(); // 높이
+		var $bannerLength = $banner.children().length;//배너 이미지의 갯수
+		var rollingId;
+
+		//정해진 초마다 함수 실행
+		rollingId = setInterval(function() { rollingStart(); }, 3000);//다음 이미지로 롤링 애니메이션 할 시간차
+
+		//마우스 오버시 롤링을 멈춘다.
+		banner.mouseover(function(){
+			//중지
+			clearInterval(rollingId);
+			$(this).css("cursor", "pointer");
+		});
+		//마우스 아웃되면 다시 시작
+		banner.mouseout(function(){
+			rollingId = setInterval(function() { rollingStart(); }, 3000);
+			$(this).css("cursor", "default");
+		});
+		
+		function rollingStart() {
+			$banner.css("width", $bannerWidth * $bannerLength + "px");
+			$banner.css("height", $bannerHeight + "px");
+			//alert(bannerHeight);
+			//배너의 좌측 위치를 옮겨 준다.
+			$banner.animate({left: - $bannerWidth + "px"}, 1500, function() { //숫자는 롤링 진행되는 시간이다.
+				//첫번째 이미지를 마지막 끝에 복사(이동이 아니라 복사)해서 추가한다.
+				$(this).append("<li>" + $(this).find("li:first").html() + "</li>");
+				//뒤로 복사된 첫번재 이미지는 필요 없으니 삭제한다.
+				$(this).find("li:first").remove();
+				//다음 움직임을 위해서 배너 좌측의 위치값을 초기화 한다.
+				$(this).css("left", 0);
+				//이 과정을 반복하면서 계속 롤링하는 배너를 만들 수 있다.
+			});
+		}
+	}); 
+</script>
 
 
 
 
-				
-<!-- 			<p class="data_count">총 6건 [1/2 쪽]</p>
+
+<body>
+	
+	<div class="contents">
+		<div class="banner">
+			<ul>
+				<li><img src="../resources/imges/common/banner.png" style="width: 90%; height: 90%;"></li>
+				<li><img src="../resources/imges/common/banner2.png" style="width: 90%; height: 90%;"></li>
+				<li><img src="../resources/imges/common/banner3.png" style="width: 90%; height: 90%;"></li>
+				<li><img src="../resources/imges/common/banner4.png" style="width: 90%; height: 90%;"></li>
+			</ul>
+		</div>
+	</div>
+
+
+
 	
 
-				<ul class="mediaWrap">
-									
-					<li>
-						<div class="img"><img src="/attachFiles/cultureInfoCourt/monthServ/1603957135099.jpg" alt="보석 같은 섬에 예술을 덧입히다, 제주 추자도"></div>
-						<div class="text">
-							<p class="title">보석 같은 섬에 예술을 덧입히다, 제주 추자도</p>
-							<div class="ny line">제주 제주시 추자면</div>
-							<ul class="detail_info pt15">
-								<li>문의 : 추자면사무소 064)728-4265</li>
-							</ul>
-						</div>
-						<a href="tourView.jsp?" onclick="fnView(806);return false;" class="go">상세보기</a>
-					</li>
-									
-					<li>
-						<div class="img"><img src="/attachFiles/cultureInfoCourt/monthServ/1603957095402.jpg" alt="일상 속 쉼표 하나, 여수 예술의 섬 장도"></div>
-						<div class="text">
-							<p class="title">일상 속 쉼표 하나, 여수 예술의 섬 장도</p>
-							<div class="ny line">전남 여수시 예울마루로</div>
-							<ul class="detail_info pt15">
-								<li>문의 : 예울마루 1544-7669</li>
-							</ul>
-						</div>
-						<a href="tourView.jsp?pDetailSeq=805" onclick="fnView(805);return false;" class="go">상세보기</a>
-					</li>
-									
-					<li>
-						<div class="img"><img src="/attachFiles/cultureInfoCourt/monthServ/1603957054498.jpg" alt="종교와 예술이 어우러진 순례자의 섬, 기점·소악도"></div>
-						<div class="text">
-							<p class="title">종교와 예술이 어우러진 순례자의 섬, 기점·소악도</p>
-							<div class="ny line">전남 신안군 증도면 소악길</div>
-							<ul class="detail_info pt15">
-								<li>문의 : 신안군청 가고싶은섬팀 061)240-8687</li>
-							</ul>
-						</div>
-						<a href="tourView.jsp?pDetailSeq=804" onclick="fnView(804);return false;" class="go">상세보기</a>
-					</li>
-									
-					<li>
-						<div class="img"><img src="/attachFiles/cultureInfoCourt/monthServ/1603957016530.jpg" alt="서포 김만중의 좌절과 꿈이 깃든 절해고도, 남해 노도"></div>
-						<div class="text">
-							<p class="title">서포 김만중의 좌절과 꿈이 깃든 절해고도, 남해 노도</p>
-							<div class="ny line">경남 남해군 상주면 노도길</div>
-							<ul class="detail_info pt15">
-								<li>문의 : 남해군청 문화관광과 055)860-8594</li>
-							</ul>
-						</div>
-						<a href="tourView.jsp?pDetailSeq=803" onclick="fnView(803);return false;" class="go">상세보기</a>
-					</li>
-									
-					<li>
-						<div class="img"><img src="/attachFiles/cultureInfoCourt/monthServ/1603956948308.jpg" alt="섬, 고혹적인 정원이 되다! 보령 죽도 상화원"></div>
-						<div class="text">
-							<p class="title">섬, 고혹적인 정원이 되다! 보령 죽도 상화원</p>
-							<div class="ny line">충남 보령시 남포면 남포방조제로</div>
-							<ul class="detail_info pt15">
-								<li>문의 : 상화원 041)933-4750</li>
-							</ul>
-						</div>
-						<a href=`tourView.jsp?$` onclick="fnView(802);return false;" class="go">상세보기</a>
-					</li>
-									
-					<li>
-						<div class="img"><img src="/attachFiles/cultureInfoCourt/monthServ/1603956902134.jpg" alt="예술 향기 가득한 인천 신시모도"></div>
-						<div class="text">
-							<p class="title">예술 향기 가득한 인천 신시모도</p>
-							<div class="ny line">인천 옹진군 북도면</div>
-							<ul class="detail_info pt15">
-								<li>문의 : 옹진군청 관광문화진흥과 032)899-2242</li>
-							</ul>
-						</div>
-						<a href="tourView.jsp?pDetailSeq=801" onclick="fnView(801);return false;" class="go">상세보기</a>
-					</li>
-					
-				</ul>				
- -->				
+
+
+
+</body>
+</html>

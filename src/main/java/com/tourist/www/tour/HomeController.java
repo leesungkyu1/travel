@@ -1,4 +1,4 @@
-package com.tourist.www;
+package com.tourist.www.tour;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,9 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -57,44 +59,46 @@ public class HomeController {
 	
 	
 	@RequestMapping(value = "/tourView", method= RequestMethod.POST)
-	public String tourView(String word, Model model, HttpServletRequest request, String area1) {
-		
-		
+	public String tourView(String word, Model model, HttpServletRequest request, String areacode, String pageno) {
 		
 		logger.info("Welcome view!");
 		BufferedReader br = null;
 		String result ="";
 		String line = "";
-		
-		
-		
-		
+				
 		try {
-			System.out.println("word value = "+word);
+//			System.out.println("word value = "+word);
 			String keyword = URLEncoder.encode(word, "UTF-8");
-			System.out.println("encoded word value = "+keyword);
+//			System.out.println("encoded word value = "+keyword);
 			String urlstr = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/searchKeyword?ServiceKey="
 					+ APIKEY
-					+ "&numOfRows=10"
+					+ "&numOfRows=1000"
 					+ "&pageNo=1"
 					+ "&MobileOS=ETC"
 					+ "&MobileApp=AppTest"
 					+ "&_type=json"
 					+ "&listYN=Y" //목록 구분(Y=목록, N=개수)
-					+ "&areaCode=39"
+					+ "&areaCode="
+					+ areacode
 					+ "&keyword="
 					+ keyword;
 //				+ "&contentTypeId="
 //				+ contenttypeid;
 			
+//			if(keyword == null) {
+//				
+//			}
 			
+//			pageno = request.getParameter("pageNo");
+//			System.out.println(pageno);
+			/* System.out.println(areacode); */
 			
-			System.out.println("url 값"+urlstr);
+			/* System.out.println("url 값"+urlstr); */
 			URL url = new URL(urlstr);
 			HttpURLConnection urlconnection = (HttpURLConnection) url.openConnection();
 			urlconnection.setRequestMethod("GET");
 			urlconnection.setRequestProperty("content-type", "apllication/json");
-			System.out.println("Response code:"+urlconnection.getResponseCode());
+			/* System.out.println("Response code:"+urlconnection.getResponseCode()); */
 			
 			if(urlconnection.getResponseCode() >= 200 && urlconnection.getResponseCode() <= 300) {
 				br = new BufferedReader(new InputStreamReader(urlconnection.getInputStream()));
@@ -117,7 +121,7 @@ public class HomeController {
 			
 			
 			JSONObject jsonObject = (JSONObject)jsonParse.parse(result);
-			System.out.println("jsonobj : "+jsonObject);
+//			System.out.println("jsonobj : "+jsonObject);
 			
 			JSONObject jsonresponse = (JSONObject)jsonObject.get("response");
 //			System.out.println("=========================="+jsonresponse);
@@ -128,15 +132,16 @@ public class HomeController {
 			JSONObject jsonbody = (JSONObject)jsonresponse.get("body");
 //			System.out.println(jsonbody+"=======================");
 			
+			
 			JSONObject jsonitems = (JSONObject)jsonbody.get("items");
 //			System.out.println(jsonitems+"ddddddddddddddddddddddddddddddd");
 			
 			JSONArray jsonitem = (JSONArray)jsonitems.get("item");
-			System.out.println("===================item"+jsonitem);
+//			System.out.println("===================item"+jsonitem);
 			
 			
-			
-			
+//			System.out.println(jsonbody.get("totalCount"));
+//			System.out.println(jsonbody.get("pageNo"));
 			
 			
 //			for(int i=0; i<jsonitem.size(); i++) {
@@ -163,10 +168,7 @@ public class HomeController {
 //			System.out.println("msgHeader :"+msgHeader);
 //			System.out.println("msgBody : "+ body);
 			
-			
-			
-			
-			
+
 
 //			 for(int i=0; i<body.size(); i++) { JSONObject obj = (JSONObject)body.get(i);
 //			  
@@ -175,30 +177,30 @@ public class HomeController {
 //			  
 //			  
 //			  }
-
-
-
-			 model.addAttribute("place", jsonitem);
-			 
 			
-
+//			List<String> itemAreaCodeList = new ArrayList<String>();
+//			
+//			for(int i=0; i<jsonitem.size(); i++) {
+//				JSONObject tempJson = (JSONObject) jsonitem.get(i);
+//				
+//				System.out.println(tempJson.toString());
+//				
+//				itemAreaCodeList.add(tempJson.get("areacode").toString());
+//			}
+//			
+//			System.out.println(itemAreaCodeList.toString());
+			
+			model.addAttribute("page", jsonbody);
+			model.addAttribute("place", jsonitem);
+//			model.addAttribute("placeArea", itemAreaCodeList);
+			
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		}		
 		return "tourView";
-				
-		
-		
-		
-		
 	
 	}
-
-
-
 }
 	
 
