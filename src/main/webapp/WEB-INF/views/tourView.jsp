@@ -34,7 +34,6 @@
 
 
 <body>
-
 		<c:set var="dataList" value="<%=jObj %>" />
 		    <c:forEach var="list" items="${dataList}">
 		      <div class="name" >이름 : ${list.name}</div>
